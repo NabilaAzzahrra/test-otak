@@ -53,8 +53,8 @@ const Login = () => {
         <section className='bg-gray-50 flex items-center justify-center h-screen'>
             <main className='w-full container mx-auto space-y-8 px-5'>
                 <div className='max-w-md mx-auto flex justify-center gap-5'>
-                    <img src={logoLp3i} alt='logo lp3i' className='h-14' />
-                    <img src={logoTagline} alt='logo lp3i' className='h-12' />
+                    <img src={logoLp3i} alt='logo lp3i' className='h-10 md:h-14' />
+                    <img src={logoTagline} alt='logo lp3i' className='h-10 md:h-14' />
                 </div>
                 <form className="max-w-md bg-white border border-gray-100 shadow-lg mx-auto px-8 py-8 rounded-3xl" onSubmit={loginFunc}>
                     <div className="mb-5">
