@@ -104,12 +104,12 @@ const Questions = () => {
   return (
     <main
       style={mainStyle}
-      className="flex flex-col p-20 items-center justify-center overflow-y-scroll"
+      className="flex flex-col p-5 md:p-20 items-center justify-center overflow-y-scroll"
     >
       <div style={backgroundImageStyle}></div>
       <div style={overlayStyle}></div>
 
-      <div className="max-w-md mx-auto flex justify-center gap-5 mb-5">
+      <div className="max-w-md mx-auto flex justify-center gap-5 mb-5 mt-10">
         <img
           src={logoLp3i}
           alt="logo lp3i"
@@ -130,15 +130,15 @@ const Questions = () => {
       </div>
 
       <div
-        className="bg-white mb-20 p-10 shadow-lg rounded rounded-3xl w-full mx-20 flex gap-20 items-center justify-center"
+        className="bg-white mb-20 pb-14 md:pb-10 p-10 shadow-lg rounded rounded-3xl w-full mx-20 flex flex-col md:flex-row md:flex gap-20 items-center justify-center"
         data-aos="fade-down"
         data-aos-delay="400"
       >
-        <div className="gap-5 items-center justify-center w-[500px]">
-          <div className="flex items-center justify-center">
-            <img src={planning} alt="Planning" width={200} />
+        <div className="gap-5 items-center justify-center md:w-[500px]">
+          <div className="flex items-center justify-center mb-4">
+            <img src={planning} alt="Planning" className="w-[150px] md:w-[200px]"/>
           </div>
-          <div className="flex gap-5 border border-2 border-black p-4 rounded-full items-center justify-center">
+          <div className="flex gap-5 border border-2 border-black px-10 p-4 rounded-full items-center justify-center">
             <div>Saya menikmati merencanakan hal baru dengan detail</div>
             <div>
               <label>
@@ -158,11 +158,11 @@ const Questions = () => {
           </div>
         </div>
 
-        <div className="gap-5 items-center justify-center w-[500px]">
-          <div className="flex items-center justify-center">
-            <img src={control} alt="Planning" width={200} />
+        <div className="gap-5 items-center justify-center md:w-[500px]">
+          <div className="flex items-center justify-center -mt-10 md:mt-0">
+            <img src={control} alt="Planning" className="w-[180px] md:w-[220px]" />
           </div>
-          <div className="flex gap-5 border border-2 border-black p-4 rounded-full items-center justify-center">
+          <div className="flex gap-5 border border-2 border-black px-10 p-4 rounded-full items-center justify-center">
             <div>Saya menikmati sesuatu yang baru pada kekangan gerakan</div>
             <div>
               <label>
@@ -186,13 +186,13 @@ const Questions = () => {
       <div
         data-aos="fade-down"
         data-aos-delay="500"
-        className="bg-white mb-20 p-10 shadow-lg rounded rounded-3xl w-full mx-20 flex gap-20 items-center justify-center"
+        className="bg-white mb-20 pb-14 p-10 shadow-lg rounded rounded-3xl w-full mx-20 flex flex-col md:flex-row md:flex gap-20 items-center justify-center"
       >
-        <div className="gap-5 items-center justify-center w-[500px]">
+        <div className="gap-5 items-center justify-center md:w-[500px]">
           <div className="flex items-center justify-center">
-            <img src={conclution1} alt="Planning" width={200} />
+            <img src={conclution1} alt="Planning" className="w-[150px] md:w-[200px]" />
           </div>
-          <div className="flex gap-5 border border-2 border-black p-4 rounded-full items-center justify-center">
+          <div className="flex gap-5 border border-2 border-black px-10 p-4 rounded-full items-center justify-center">
             <div>Saya sangat logis dan saya jarang membuat kesimpulan</div>
             <div>
               <label>
@@ -212,11 +212,11 @@ const Questions = () => {
           </div>
         </div>
 
-        <div className="gap-5 items-center justify-center w-[500px]">
-          <div className="flex items-center justify-center">
-            <img src={conclution2} alt="Planning" width={200} />
+        <div className="gap-5 items-center justify-center md:w-[500px]">
+        <div className="flex items-center justify-center -mt-10 md:mt-0">
+            <img src={conclution2} alt="Planning" className="w-[160px] md:w-[200px]" />
           </div>
-          <div className="flex gap-5 border border-2 border-black p-4 rounded-full items-center justify-center">
+          <div className="flex gap-5 border border-2 border-black px-10 p-4 rounded-full items-center justify-center">
             <div>
               Saya bisa mencapai kesimpulan tanpa mengikuti semua argumen secara
               mendetail
@@ -241,15 +241,15 @@ const Questions = () => {
       </div>
 
       <div
-        className="bg-white mb-20 p-10 shadow-lg rounded rounded-3xl w-full mx-20 flex gap-20 items-center justify-center"
+        className="bg-white mb-20 pb-14 p-10 shadow-lg rounded rounded-3xl w-full mx-20 flex flex-col md:flex-row md:flex gap-20 items-center justify-center"
         data-aos="fade-down"
         data-aos-delay="400"
       >
-        <div className="gap-5 items-center justify-center w-[500px]">
+        <div className="gap-5 items-center justify-center md:w-[500px]">
           <div className="flex items-center justify-center mb-4">
-            <img src={sleep} alt="Planning" width={180} />
+            <img src={sleep} alt="Planning" className="w-[150px] md:w-[180px] ml-10 md:ml-0" />
           </div>
-          <div className="flex gap-5 border border-2 border-black p-4 rounded-full items-center justify-center">
+          <div className="flex gap-5 border border-2 border-black px-10 p-4 rounded-full items-center justify-center">
             <div>
               Saya jarang bermimpi siang hari atau mengingat mimpi buruk saya
               malam hari
@@ -272,11 +272,11 @@ const Questions = () => {
           </div>
         </div>
 
-        <div className="gap-5 items-center justify-center w-[500px]">
-          <div className="flex items-center justify-center">
-            <img src={dreambig} alt="Planning" width={200} />
+        <div className="gap-5 items-center justify-center md:w-[500px]">
+        <div className="flex items-center justify-center -mt-10 md:mt-0">
+            <img src={dreambig} alt="Planning" className="w-[180px] md:w-[200px]" />
           </div>
-          <div className="flex gap-5 border border-2 border-black p-4 rounded-full items-center justify-center">
+          <div className="flex gap-5 border border-2 border-black px-10 p-4 rounded-full items-center justify-center">
             <div>
               Mimpi saya terlihat begitu jelas dan saya sering bermimpi di siang
               hari
@@ -301,15 +301,15 @@ const Questions = () => {
       </div>
 
       <div
-        className="bg-white mb-20 p-10 shadow-lg rounded rounded-3xl w-full mx-20 flex gap-20 items-center justify-center"
+        className="bg-white mb-20 pb-14 p-10 shadow-lg rounded rounded-3xl w-full mx-20 flex flex-col md:flex-row md:flex gap-20 items-center justify-center"
         data-aos="fade-down"
         data-aos-delay="400"
       >
-        <div className="gap-5 items-center justify-center w-[500px]">
+        <div className="gap-5 items-center justify-center md:w-[500px]">
           <div className="flex items-center justify-center">
-            <img src={idea} alt="Planning" width={200} />
+            <img src={idea} alt="Planning" className="w-[180px] md:w-[200px]" />
           </div>
-          <div className="flex gap-5 border border-2 border-black p-4 rounded-full items-center justify-center">
+          <div className="flex gap-5 border border-2 border-black px-10 p-4 rounded-full items-center justify-center">
             <div>Saya berusaha menemukan alasan dari perilaku orang lain</div>
             <div>
               <label>
@@ -329,11 +329,11 @@ const Questions = () => {
           </div>
         </div>
 
-        <div className="gap-5 items-center justify-center w-[500px]">
-          <div className="flex items-center justify-center mb-4">
-            <img src={people} alt="Planning" width={180} />
+        <div className="gap-5 items-center justify-center md:w-[500px]">
+        <div className="flex items-center justify-center -mt-10 md:mt-0">
+            <img src={people} alt="Planning"  className="w-[180px] md:w-[190px] mb-4" />
           </div>
-          <div className="flex gap-5 border border-2 border-black p-4 rounded-full items-center justify-center">
+          <div className="flex gap-5 border border-2 border-black px-10 p-4 rounded-full items-center justify-center">
             <div>
               Saya sering melihat motivasi terpendam dari perilaku orang lain
             </div>
@@ -357,15 +357,15 @@ const Questions = () => {
       </div>
 
       <div
-        className="bg-white mb-20 p-10 shadow-lg rounded rounded-3xl w-full mx-20 flex gap-20 items-center justify-center animate-slide-down"
+        className="bg-white mb-20 pb-14 p-10 shadow-lg rounded rounded-3xl w-full mx-20 flex flex-col md:flex-row md:flex gap-20 items-center justify-center animate-slide-down"
         data-aos="fade-down"
         data-aos-delay="400"
       >
-        <div className="gap-5 items-center justify-center w-[500px]">
+        <div className="gap-5 items-center justify-center md:w-[500px]">
           <div className="flex items-center justify-center mb-3">
-            <img src={math} alt="Planning" width={180} />
+            <img src={math} alt="Planning" className="w-[135px] md:w-[190px]" />
           </div>
-          <div className="flex gap-5 border border-2 border-black p-4 rounded-full items-center justify-center">
+          <div className="flex gap-5 border border-2 border-black px-10 p-4 rounded-full items-center justify-center">
             <div>
               Saya lebih memilih matematika dan masalah ilmiah daripada masalah
               seni
@@ -388,11 +388,11 @@ const Questions = () => {
           </div>
         </div>
 
-        <div className="gap-5 items-center justify-center w-[500px]">
-          <div className="flex items-center justify-center mb-2">
-            <img src={art} alt="Planning" width={180} />
+        <div className="gap-5 items-center justify-center md:w-[500px]">
+        <div className="flex items-center justify-center -mt-10 md:mt-0">
+            <img src={art} alt="Planning" className="w-[135px] md:w-[190px] mb-4" />
           </div>
-          <div className="flex gap-5 border border-2 border-black p-4 rounded-full items-center justify-center">
+          <div className="flex gap-5 border border-2 border-black px-10 p-4 rounded-full items-center justify-center">
             <div>Saya memilih masalah seni dari pada matematika dan ilmiah</div>
             <div>
               <label>
