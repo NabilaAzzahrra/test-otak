@@ -11,7 +11,11 @@ import { useNavigate } from "react-router-dom";
 
 function Home() {
   const [user, setUser] = useState({});
+  const [result, setResult] = useState(null);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(true);
+  const [hasil, setHasil] = useState('belum ada');
 
   const getUser = async () => {
     checkTokenExpiration()
@@ -38,11 +42,47 @@ function Home() {
         };
 
         setUser(data);
+        getResult(data);
       })
       .catch((error) => {
         console.log(error);
         navigate("/");
       });
+  };
+
+  const getResult = async (data) => {
+    await axios
+      .get(
+        `http://localhost:3000/hasils/${data.id}`
+      )
+      .then((response) => {
+        const data = response.data;
+        setResult(data);
+
+        if (data.length == 0) {
+          setLoading(false);
+          setError(false);
+        } else {
+          const result = response.data[0];
+
+          const hasil = result.hasil;
+
+          setHasil(hasil[0]);
+          setLoading(false);
+          setError(false);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        setError(false);
+        setLoading(false);
+      });
+  };
+
+  const logoutFunc = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("bucket");
+    navigate("/");
   };
 
   const startTest = async () => {
@@ -101,20 +141,62 @@ function Home() {
         <div className="text-center space-y-2">
           <h2 className="uppercase font-bold text-3xl">Tes Otak Kanan Kiri</h2>
           <p className="text-sm">
-          Puncak kebahagiaan dan kesuksesan tercapai saat kita memanfaatkan kecerdasan otak kanan dan kiri secara optimal. 
-          <br></br>
-          Fokuslah pada pembelajaran dan pekerjaan yang sesuai dengan kekuatan alami otak kita. 
-          <br></br>
-          Dengan begitu, kita membuka pintu menuju pencapaian dan kebahagiaan yang tak terbatas.
+            Puncak kebahagiaan dan kesuksesan tercapai saat kita memanfaatkan
+            kecerdasan otak kanan dan kiri secara optimal.
+            <br></br>
+            Fokuslah pada pembelajaran dan pekerjaan yang sesuai dengan kekuatan
+            alami otak kita.
+            <br></br>
+            Dengan begitu, kita membuka pintu menuju pencapaian dan kebahagiaan
+            yang tak terbatas.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={startTest}
-          className="border-2 border-gray-900 text-sm uppercase font-bold hover:bg-gray-900 hover:text-white px-3 py-1"
-        >
-          <span>Mulai</span>
-        </button>
+        {loading ? (
+          <p className="text-gray-900 text-sm">Loading...</p>
+        ) : error ? (
+          <div className="text-center space-y-3">
+            <div className="border-2 border-red-500 text-base bg-red-500 rounded-xl text-white px-5 py-3">
+              <p>Mohon maaf, server sedang tidak tersedia.</p>
+            </div>
+            <button
+              type="button"
+              onClick={logoutFunc}
+              className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-xl text-sm"
+            >
+              <i className="fa-solid fa-right-from-bracket"></i> Keluar
+            </button>
+          </div>
+        ) : result.length > 0 ? (
+          <div className="text-center space-y-3">
+            <div className="border-2 border-gray-900 text-base px-5 py-3">
+              <p>
+                <span>Nama Lengkap: </span>
+                <span className="font-bold underline">{user.name}</span>
+              </p>
+              <p>
+                <span>Dominan: </span>
+                <span className="font-bold underline">
+                  <span className="uppercase">{result[0].hasil}</span>
+                </span>
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={logoutFunc}
+              className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-xl text-sm"
+            >
+              <i className="fa-solid fa-right-from-bracket"></i> Keluar
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={startTest}
+            className="border-2 border-gray-900 text-sm uppercase font-bold hover:bg-gray-900 hover:text-white px-3 py-1"
+          >
+            <span>Mulai</span>
+          </button>
+        )}
       </main>
     </section>
   );

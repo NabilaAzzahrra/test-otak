@@ -9,6 +9,7 @@ import Login from './pages/auth/Login.jsx'
 import Register from './pages/auth/Register.jsx'
 import Home from './pages/Home.jsx'
 import Question from './pages/Questions.jsx'
+import Result from './pages/Result.jsx'
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
   {
     path: "/question",
     element: <Question />
+  },
+  {
+    path: "/result",
+    element: <Result />
   },
 ])
 
