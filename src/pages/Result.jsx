@@ -130,7 +130,7 @@ const Result = () => {
               </div>
             ) : result[0].hasil === "kiri" ? (
               <div className="p-4 normal-case text-md text-sm text-slate-700">
-                Selamat, kamu dominan<span className="text-red-500 font-extrabold uppercase">
+                Selamat, kamu dominan <span className="text-red-500 font-extrabold uppercase">
                   otak kiri
                 </span>! Kemampuan analitis dan logikamu
                 sangat luar biasa.
