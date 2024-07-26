@@ -1462,7 +1462,7 @@ const Questions = () => {
         <div className="gap-5 items-center justify-center md:w-[500px]">
           <div className="flex items-center justify-center mb-3">
             <img
-              src={music}
+              src={nomusic}
               alt="Planning"
               className="w-[135px] md:w-[190px]"
             />
@@ -1491,7 +1491,7 @@ const Questions = () => {
         <div className="gap-5 items-center justify-center md:w-[500px]">
           <div className="flex items-center justify-center -mt-10 md:mt-0">
             <img
-              src={nomusic}
+              src={music}
               alt="Planning"
               className="w-[135px] md:w-[190px] mb-4"
             />
