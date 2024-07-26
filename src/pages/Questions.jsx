@@ -169,7 +169,7 @@ const Questions = () => {
       let data = JSON.parse(dataStorage);
       console.log(data);
       await axios
-        .post("http://localhost:3000/answers", data)
+        .post("https://api.politekniklp3i-tasikmalaya.ac.id/brain/answers", data)
         .then((res) => {
           console.log(res);
         })

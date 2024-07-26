@@ -53,7 +53,7 @@ function Home() {
   const getResult = async (data) => {
     await axios
       .get(
-        `http://localhost:3000/hasils/${data.id}`
+        `https://api.politekniklp3i-tasikmalaya.ac.id/brain/hasils/${data.id}`
       )
       .then((response) => {
         const data = response.data;
