@@ -88,7 +88,7 @@ function Home() {
   const startTest = async () => {
     try {
       const responseUserExist = await axios.get(
-        `https://api.politekniklp3i-tasikmalaya.ac.id/kecerdasan/users/${user.id}`
+        `https://elearning.politekniklp3i-tasikmalaya.ac.id:8444/kecerdasan/users/${user.id}`
       );
       if (responseUserExist.data) {
         navigate("/question");
@@ -103,7 +103,7 @@ function Home() {
         };
         await axios
           .post(
-            `https://api.politekniklp3i-tasikmalaya.ac.id/kecerdasan/users`,
+            `https://elearning.politekniklp3i-tasikmalaya.ac.id:8444/kecerdasan/users`,
             data
           )
           .then(() => {
