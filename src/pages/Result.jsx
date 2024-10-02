@@ -43,7 +43,7 @@ const Result = () => {
 
   const getResult = async (data) => {
     await axios
-      .get(`https://elearning.politekniklp3i-tasikmalaya.ac.id:8444/brain/hasils/${data.id}`)
+      .get(`https://psikotest-otak-backend.politekniklp3i-tasikmalaya.ac.id/hasils/${data.id}`)
       .then((response) => {
         const data = response.data;
 

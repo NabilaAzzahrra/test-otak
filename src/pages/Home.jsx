@@ -53,7 +53,7 @@ function Home() {
   const getResult = async (data) => {
     await axios
       .get(
-        `https://elearning.politekniklp3i-tasikmalaya.ac.id:8444/brain/hasils/${data.id}`
+        `https://psikotest-otak-backend.politekniklp3i-tasikmalaya.ac.id/hasils/${data.id}`
       )
       .then((response) => {
         const data = response.data;
@@ -88,7 +88,7 @@ function Home() {
   const startTest = async () => {
     try {
       const responseUserExist = await axios.get(
-        `https://elearning.politekniklp3i-tasikmalaya.ac.id:8444/kecerdasan/users/${user.id}`
+        `https://psikotest-kecerdasan-backend.politekniklp3i-tasikmalaya.ac.id/users/${user.id}`
       );
       if (responseUserExist.data) {
         navigate("/question");
@@ -103,7 +103,7 @@ function Home() {
         };
         await axios
           .post(
-            `https://elearning.politekniklp3i-tasikmalaya.ac.id:8444/kecerdasan/users`,
+            `https://psikotest-kecerdasan-backend.politekniklp3i-tasikmalaya.ac.id/users`,
             data
           )
           .then(() => {
