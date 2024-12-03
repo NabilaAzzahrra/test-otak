@@ -128,6 +128,7 @@ function Home() {
       }
 
       const decoded = jwtDecode(token);
+      console.log(decoded.data);
       setUser(decoded.data);
 
       const fetchProfile = async (token) => {
@@ -159,6 +160,7 @@ function Home() {
             const newToken = response.data;
             const decodedNewToken = jwtDecode(newToken);
             localStorage.setItem('LP3IPSYBRAIN:token', newToken);
+            console.log(decodedNewToken.data);
             setUser(decodedNewToken.data);
             const newProfileData = await fetchProfile(newToken);
             const data = {
