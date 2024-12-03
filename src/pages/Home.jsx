@@ -149,7 +149,7 @@ function Home() {
           classes: profileData.applicant.class ?? "Tidak diketahui",
           status: profileData.applicant.status == "1" ? "Aktif" : "Tidak Aktif",
         };
-        setUser(data);
+        console.log(data);
       } catch (profileError) {
         if (profileError.response && profileError.response.status === 403) {
           try {
@@ -158,51 +158,53 @@ function Home() {
             });
             const newToken = response.data;
             const decodedNewToken = jwtDecode(newToken);
-            console.log(decodedNewToken);
             localStorage.setItem('LP3IPSYBRAIN:token', newToken);
-            // setUser(decodedNewToken.data);
+            setUser(decodedNewToken.data);
             const newProfileData = await fetchProfile(newToken);
-            console.log(newProfileData);
-            // setValidateData(newProfileData.validate.validate_data);
-            // setValidateFather(newProfileData.validate.validate_father);
-            // setValidateMother(newProfileData.validate.validate_mother);
-            // setValidateProgram(newProfileData.validate.validate_program);
-            // setValidateFiles(newProfileData.validate.validate_files);
-            // setValidate(newProfileData.validate.validate);
+            const data = {
+              id: newProfileData.applicant.identity,
+              name: newProfileData.applicant.name,
+              email: newProfileData.applicant.email,
+              phone: newProfileData.applicant.phone,
+              school: newProfileData.applicant.school ?? "Tidak diketahui",
+              classes: newProfileData.applicant.class ?? "Tidak diketahui",
+              status: newProfileData.applicant.status == "1" ? "Aktif" : "Tidak Aktif",
+            };
+            console.log(data);
           } catch (error) {
             console.error('Error refreshing token or fetching profile:', error);
-            // if (error.response && error.response.status === 400) {
-            //   localStorage.removeItem('LP3IPSYBRAIN:token');
-            //   navigate('/')
-            // }
+            if (error.response && error.response.status === 400) {
+              localStorage.removeItem('LP3IPSYBRAIN:token');
+              navigate('/')
+            }
           }
         } else {
           console.error('Error fetching profile:', profileError);
-          // localStorage.removeItem('LP3IPSYBRAIN:token');
+          localStorage.removeItem('LP3IPSYBRAIN:token');
           // setErrorPage(true);
-          // setTimeout(() => {
-          //   navigate('/');
-          // }, 2000);
+          setTimeout(() => {
+            navigate('/');
+          }, 2000);
         }
       }
     } catch (error) {
       console.log(error);
-      // if (error.response) {
-      //   if ([400, 403].includes(error.response.status)) {
-      //     localStorage.removeItem('LP3IPSYBRAIN:token');
-      //     navigate('/');
-      //   } else {
-      //     console.error('Unexpected HTTP error:', error);
-      //     // setErrorPage(true);
-      //   }
-      // } else if (error.request) {
-      //   console.error('Network error:', error);
-      //   // setErrorPage(true);
-      // } else {
-      //   console.error('Error:', error);
-      //   // setErrorPage(true);
-      // }
-      // navigate('/');
+      if (error.response) {
+        if ([400, 403].includes(error.response.status)) {
+          localStorage.removeItem('LP3IPSYBRAIN:token');
+          navigate('/');
+        } else {
+          console.error('Unexpected HTTP error:', error);
+          // setErrorPage(true);
+        }
+      } else if (error.request) {
+        console.error('Network error:', error);
+        // setErrorPage(true);
+      } else {
+        console.error('Error:', error);
+        // setErrorPage(true);
+      }
+      navigate('/');
     } finally {
       setTimeout(() => {
         setLoading(false);
