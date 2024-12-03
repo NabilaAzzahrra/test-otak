@@ -46,7 +46,7 @@ function Home() {
       })
       .catch((error) => {
         console.log(error);
-        navigate("/");
+        // navigate("/");
       });
   };
 
@@ -80,7 +80,7 @@ function Home() {
   };
 
   const logoutFunc = () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem("LP3IPSYBRAIN:token");
     localStorage.removeItem("bucket");
     navigate("/");
   };
@@ -91,7 +91,7 @@ function Home() {
         `https://psikotest-kecerdasan-backend.politekniklp3i-tasikmalaya.ac.id/users/${user.id}`
       );
       if (responseUserExist.data) {
-        navigate("/question");
+        // navigate("/question");
       } else {
         const data = {
           id_user: user.id,
@@ -107,7 +107,7 @@ function Home() {
             data
           )
           .then(() => {
-            navigate("/question");
+            // navigate("/question");
           })
           .catch((error) => {
             console.log(error);
@@ -118,14 +118,98 @@ function Home() {
     }
   };
 
+  const getInfo = async () => {
+    // setLoading(true);
+
+    try {
+      const token = localStorage.getItem('LP3IPSYBRAIN:token');
+      if (!token) {
+        return navigate('/');
+      }
+
+      const decoded = jwtDecode(token);
+      setUser(decoded.data);
+
+      const fetchProfile = async (token) => {
+        const response = await axios.get('https://pmb-api.politekniklp3i-tasikmalaya.ac.id/profiles/v1', {
+          headers: { Authorization: token },
+          withCredentials: true,
+        });
+        return response.data;
+      };
+
+      try {
+        const profileData = await fetchProfile(token);
+        console.log(profileData);
+        // setValidateData(profileData.validate.validate_data);
+        // setValidateFather(profileData.validate.validate_father);
+        // setValidateMother(profileData.validate.validate_mother);
+        // setValidateProgram(profileData.validate.validate_program);
+        // setValidateFiles(profileData.validate.validate_files);
+        // setValidate(profileData.validate.validate);
+      } catch (profileError) {
+        if (profileError.response && profileError.response.status === 403) {
+          try {
+            const response = await axios.get('https://pmb-api.politekniklp3i-tasikmalaya.ac.id/auth/token/v2', {
+              withCredentials: true,
+            });
+            const newToken = response.data;
+            const decodedNewToken = jwtDecode(newToken);
+            console.log(decodedNewToken);
+            localStorage.setItem('LP3IPSYBRAIN:token', newToken);
+            // setUser(decodedNewToken.data);
+            const newProfileData = await fetchProfile(newToken);
+            console.log(newProfileData);
+            // setValidateData(newProfileData.validate.validate_data);
+            // setValidateFather(newProfileData.validate.validate_father);
+            // setValidateMother(newProfileData.validate.validate_mother);
+            // setValidateProgram(newProfileData.validate.validate_program);
+            // setValidateFiles(newProfileData.validate.validate_files);
+            // setValidate(newProfileData.validate.validate);
+          } catch (error) {
+            console.error('Error refreshing token or fetching profile:', error);
+            if (error.response && error.response.status === 400) {
+              localStorage.removeItem('LP3IPSYBRAIN:token');
+              navigate('/')
+            }
+          }
+        } else {
+          console.error('Error fetching profile:', profileError);
+          localStorage.removeItem('LP3IPSYBRAIN:token');
+          // setErrorPage(true);
+          setTimeout(() => {
+            navigate('/');
+          }, 2000);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      if (error.response) {
+        if ([400, 403].includes(error.response.status)) {
+          localStorage.removeItem('LP3IPSYBRAIN:token');
+          navigate('/');
+        } else {
+          console.error('Unexpected HTTP error:', error);
+          // setErrorPage(true);
+        }
+      } else if (error.request) {
+        console.error('Network error:', error);
+        // setErrorPage(true);
+      } else {
+        console.error('Error:', error);
+        // setErrorPage(true);
+      }
+      navigate('/');
+    } finally {
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
+    }
+  };
+
+
   useEffect(() => {
-    checkTokenExpiration()
-      .then(() => {
-        getUser();
-      })
-      .catch(() => {
-        navigate("/");
-      });
+    getInfo();
   }, []);
 
   return (
