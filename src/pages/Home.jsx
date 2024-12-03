@@ -140,13 +140,16 @@ function Home() {
 
       try {
         const profileData = await fetchProfile(token);
-        console.log(profileData);
-        // setValidateData(profileData.validate.validate_data);
-        // setValidateFather(profileData.validate.validate_father);
-        // setValidateMother(profileData.validate.validate_mother);
-        // setValidateProgram(profileData.validate.validate_program);
-        // setValidateFiles(profileData.validate.validate_files);
-        // setValidate(profileData.validate.validate);
+        const data = {
+          id: profileData.applicant.identity,
+          name: profileData.applicant.name,
+          email: profileData.applicant.email,
+          phone: profileData.applicant.phone,
+          school: profileData.applicant.school ?? "Tidak diketahui",
+          classes: profileData.applicant.class ?? "Tidak diketahui",
+          status: profileData.applicant.status == "1" ? "Aktif" : "Tidak Aktif",
+        };
+        setUser(data);
       } catch (profileError) {
         if (profileError.response && profileError.response.status === 403) {
           try {
@@ -168,38 +171,38 @@ function Home() {
             // setValidate(newProfileData.validate.validate);
           } catch (error) {
             console.error('Error refreshing token or fetching profile:', error);
-            if (error.response && error.response.status === 400) {
-              localStorage.removeItem('LP3IPSYBRAIN:token');
-              navigate('/')
-            }
+            // if (error.response && error.response.status === 400) {
+            //   localStorage.removeItem('LP3IPSYBRAIN:token');
+            //   navigate('/')
+            // }
           }
         } else {
           console.error('Error fetching profile:', profileError);
-          localStorage.removeItem('LP3IPSYBRAIN:token');
+          // localStorage.removeItem('LP3IPSYBRAIN:token');
           // setErrorPage(true);
-          setTimeout(() => {
-            navigate('/');
-          }, 2000);
+          // setTimeout(() => {
+          //   navigate('/');
+          // }, 2000);
         }
       }
     } catch (error) {
       console.log(error);
-      if (error.response) {
-        if ([400, 403].includes(error.response.status)) {
-          localStorage.removeItem('LP3IPSYBRAIN:token');
-          navigate('/');
-        } else {
-          console.error('Unexpected HTTP error:', error);
-          // setErrorPage(true);
-        }
-      } else if (error.request) {
-        console.error('Network error:', error);
-        // setErrorPage(true);
-      } else {
-        console.error('Error:', error);
-        // setErrorPage(true);
-      }
-      navigate('/');
+      // if (error.response) {
+      //   if ([400, 403].includes(error.response.status)) {
+      //     localStorage.removeItem('LP3IPSYBRAIN:token');
+      //     navigate('/');
+      //   } else {
+      //     console.error('Unexpected HTTP error:', error);
+      //     // setErrorPage(true);
+      //   }
+      // } else if (error.request) {
+      //   console.error('Network error:', error);
+      //   // setErrorPage(true);
+      // } else {
+      //   console.error('Error:', error);
+      //   // setErrorPage(true);
+      // }
+      // navigate('/');
     } finally {
       setTimeout(() => {
         setLoading(false);
