@@ -4,131 +4,30 @@ import Lottie from "lottie-react";
 import awanLp3i from "../assets/img/awan-lp3i.json";
 import logoLp3i from "../assets/img/logo-lp3i.png";
 import logoTagline from "../assets/img/tagline-warna.png";
-import { checkTokenExpiration } from "../middlewares/middleware";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 function Home() {
-  const [user, setUser] = useState({});
-  const [result, setResult] = useState(null);
   const navigate = useNavigate();
+  const [user, setUser] = useState({
+    name: 'Loading...'
+  });
+
+  const [errorPage, setErrorPage] = useState(false);
+  const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(true);
-  const [hasil, setHasil] = useState('belum ada');
-
-  const getUser = async () => {
-    checkTokenExpiration()
-      .then(() => {
-        const token = localStorage.getItem("token");
-        const decoded = jwtDecode(token);
-
-        const userId = decoded.id;
-        const userName = decoded.name;
-        const userEmail = decoded.email;
-        const userPhone = decoded.phone;
-        const userSchool = decoded.school ?? "Tidak diketahui";
-        const userClasses = decoded.class ?? "Tidak diketahui";
-        const userStatus = decoded.status;
-
-        const data = {
-          id: userId,
-          name: userName,
-          email: userEmail,
-          phone: userPhone,
-          school: userSchool,
-          classes: userClasses,
-          status: userStatus,
-        };
-
-        setUser(data);
-        getResult(data);
-      })
-      .catch((error) => {
-        console.log(error);
-        // navigate("/");
-      });
-  };
-
-  const getResult = async (data) => {
-    await axios
-      .get(
-        `https://psikotest-otak-backend.politekniklp3i-tasikmalaya.ac.id/hasils/${data.id}`
-      )
-      .then((response) => {
-        const data = response.data;
-        setResult(data);
-
-        if (data.length == 0) {
-          setLoading(false);
-          setError(false);
-        } else {
-          const result = response.data[0];
-
-          const hasil = result.hasil;
-
-          setHasil(hasil[0]);
-          setLoading(false);
-          setError(false);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        setError(false);
-        setLoading(false);
-      });
-  };
-
-  const logoutFunc = () => {
-    localStorage.removeItem("LP3IPSYBRAIN:token");
-    localStorage.removeItem("bucket");
-    navigate("/");
-  };
-
-  const startTest = async () => {
-    try {
-      const responseUserExist = await axios.get(
-        `https://psikotest-kecerdasan-backend.politekniklp3i-tasikmalaya.ac.id/users/${user.id}`
-      );
-      if (responseUserExist.data) {
-        // navigate("/question");
-      } else {
-        const data = {
-          id_user: user.id,
-          name: user.name,
-          email: user.email,
-          phone: user.phone,
-          school: user.school,
-          classes: user.classes,
-        };
-        await axios
-          .post(
-            `https://psikotest-kecerdasan-backend.politekniklp3i-tasikmalaya.ac.id/users`,
-            data
-          )
-          .then(() => {
-            // navigate("/question");
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const getInfo = async () => {
-    // setLoading(true);
+    setLoading(true);
 
     try {
-      const token = localStorage.getItem('LP3IPSYBRAIN:token');
+      const token = localStorage.getItem('LP3ITO:token');
       if (!token) {
         return navigate('/');
       }
 
       const decoded = jwtDecode(token);
-      console.log(decoded.data);
       setUser(decoded.data);
 
       const fetchProfile = async (token) => {
@@ -142,48 +41,48 @@ function Home() {
       try {
         const profileData = await fetchProfile(token);
         const data = {
-          id: profileData.applicant.identity,
+          id: decoded.data.id,
           name: profileData.applicant.name,
           email: profileData.applicant.email,
           phone: profileData.applicant.phone,
-          school: profileData.applicant.school ?? "Tidak diketahui",
-          classes: profileData.applicant.class ?? "Tidak diketahui",
-          status: profileData.applicant.status == "1" ? "Aktif" : "Tidak Aktif",
+          school: profileData.applicant.school,
+          classes: profileData.applicant.class,
+          status: decoded.data.status,
         };
-        console.log(data);
+        getResult(data);
       } catch (profileError) {
         if (profileError.response && profileError.response.status === 403) {
           try {
             const response = await axios.get('https://pmb-api.politekniklp3i-tasikmalaya.ac.id/auth/token/v2', {
               withCredentials: true,
             });
+
             const newToken = response.data;
             const decodedNewToken = jwtDecode(newToken);
-            localStorage.setItem('LP3IPSYBRAIN:token', newToken);
-            console.log(decodedNewToken.data);
+            localStorage.setItem('LP3ITO:token', newToken);
             setUser(decodedNewToken.data);
             const newProfileData = await fetchProfile(newToken);
             const data = {
-              id: newProfileData.applicant.identity,
+              id: decodedNewToken.data.id,
               name: newProfileData.applicant.name,
               email: newProfileData.applicant.email,
               phone: newProfileData.applicant.phone,
-              school: newProfileData.applicant.school ?? "Tidak diketahui",
-              classes: newProfileData.applicant.class ?? "Tidak diketahui",
-              status: newProfileData.applicant.status == "1" ? "Aktif" : "Tidak Aktif",
+              school: newProfileData.applicant.school,
+              classes: newProfileData.applicant.class,
+              status: decodedNewToken.data.status,
             };
-            console.log(data);
+            getResult(data);
           } catch (error) {
             console.error('Error refreshing token or fetching profile:', error);
             if (error.response && error.response.status === 400) {
-              localStorage.removeItem('LP3IPSYBRAIN:token');
+              localStorage.removeItem('LP3ITO:token');
               navigate('/')
             }
           }
         } else {
           console.error('Error fetching profile:', profileError);
-          localStorage.removeItem('LP3IPSYBRAIN:token');
-          // setErrorPage(true);
+          localStorage.removeItem('LP3ITO:token');
+          setErrorPage(true);
           setTimeout(() => {
             navigate('/');
           }, 2000);
@@ -193,18 +92,18 @@ function Home() {
       console.log(error);
       if (error.response) {
         if ([400, 403].includes(error.response.status)) {
-          localStorage.removeItem('LP3IPSYBRAIN:token');
+          localStorage.removeItem('LP3ITO:token');
           navigate('/');
         } else {
           console.error('Unexpected HTTP error:', error);
-          // setErrorPage(true);
+          setErrorPage(true);
         }
       } else if (error.request) {
         console.error('Network error:', error);
-        // setErrorPage(true);
+        setErrorPage(true);
       } else {
         console.error('Error:', error);
-        // setErrorPage(true);
+        setErrorPage(true);
       }
       navigate('/');
     } finally {
@@ -214,10 +113,420 @@ function Home() {
     }
   };
 
+  const getResult = async (data) => {
+    await axios
+      .get(`https://psikotest-otak-backend.politekniklp3i-tasikmalaya.ac.id/hasils/${data.id}`)
+      .then((response) => {
+        console.log(response);
+        setResult(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+        if (error.response) {
+          if ([400, 403].includes(error.response.status)) {
+            localStorage.removeItem('LP3ITO:token');
+            navigate('/');
+          } else {
+            console.error('Unexpected HTTP error:', error);
+            setErrorPage(true);
+          }
+        } else if (error.request) {
+          console.error('Network error:', error);
+          setErrorPage(true);
+        } else {
+          console.error('Error:', error);
+          setErrorPage(true);
+        }
+        setTimeout(() => {
+          setLoading(false);
+        }, 1000);
+      });
+  };
+
+  const logoutHandle = async () => {
+    const confirmed = confirm('Apakah anda yakin akan keluar?');
+    if (confirmed) {
+      try {
+        const token = localStorage.getItem('LP3ITO:token');
+        const responseData = await axios.delete('https://pmb-api.politekniklp3i-tasikmalaya.ac.id/auth/logout/v2', {
+          headers: {
+            Authorization: token
+          }
+        });
+        if (responseData) {
+          alert(responseData.data.message);
+          localStorage.removeItem('LP3ITO:token');
+          localStorage.removeItem("bucket");
+          navigate('/')
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 403) {
+          try {
+            const response = await axios.get('https://pmb-api.politekniklp3i-tasikmalaya.ac.id/auth/token/v2', {
+              withCredentials: true,
+            });
+
+            const newToken = response.data;
+            const responseData = await axios.delete('https://pmb-api.politekniklp3i-tasikmalaya.ac.id/auth/logout/v2', {
+              headers: {
+                Authorization: newToken
+              }
+            });
+            if (responseData) {
+              alert(responseData.data.message);
+              localStorage.removeItem('LP3ITO:token');
+              localStorage.removeItem("bucket");
+              navigate('/')
+            }
+          } catch (error) {
+            console.error('Error refreshing token or fetching profile:', error);
+            if (error.response && error.response.status === 400) {
+              localStorage.removeItem('LP3ITO:token');
+              navigate('/')
+            }
+            if (error.response && error.response.status === 401) {
+              localStorage.removeItem('LP3ITO:token');
+              navigate('/')
+            }
+          }
+        } else {
+          console.error('Error fetching profile:', error);
+          setErrorPage(true);
+        }
+      }
+    }
+  }
+
+  const startTest = async () => {
+    setLoading(true);
+    try {
+      const responseUserExist = await axios.get(
+        `https://psikotest-otak-backend.politekniklp3i-tasikmalaya.ac.id/users/${user.id}`
+      );
+      if (responseUserExist.data) {
+        console.log(responseUserExist.data);
+        // navigate("/question");
+      } else {
+        try {
+          const token = localStorage.getItem('LP3ITO:token');
+          if (!token) {
+            return navigate('/');
+          }
+
+          const decoded = jwtDecode(token);
+          setUser(decoded.data);
+
+          const fetchProfile = async (token) => {
+            const response = await axios.get('https://pmb-api.politekniklp3i-tasikmalaya.ac.id/profiles/v1', {
+              headers: { Authorization: token },
+              withCredentials: true,
+            });
+            return response.data;
+          };
+
+          try {
+            const profileData = await fetchProfile(token);
+            const data = {
+              id_user: decoded.data.id,
+              name: profileData.applicant.name,
+              email: profileData.applicant.email,
+              phone: profileData.applicant.phone,
+              school: profileData.applicant.school,
+              classes: profileData.applicant.class,
+              status: decoded.data.status,
+            };
+            const responseUser = await axios.post(`https://psikotest-otak-backend.politekniklp3i-tasikmalaya.ac.id/users`, data);
+            console.log(data);
+            if (responseUser) {
+              setTimeout(() => {
+                setLoading(false);
+              }, 1000);
+              navigate("/question");
+            }
+          } catch (profileError) {
+            if (profileError.response && profileError.response.status === 403) {
+              try {
+                const response = await axios.get('https://pmb-api.politekniklp3i-tasikmalaya.ac.id/auth/token/v2', {
+                  withCredentials: true,
+                });
+
+                const newToken = response.data;
+                const decodedNewToken = jwtDecode(newToken);
+                localStorage.setItem('LP3ITO:token', newToken);
+                setUser(decodedNewToken.data);
+                const newProfileData = await fetchProfile(newToken);
+                const data = {
+                  id_user: decodedNewToken.data.id,
+                  name: newProfileData.applicant.name,
+                  email: newProfileData.applicant.email,
+                  phone: newProfileData.applicant.phone,
+                  school: newProfileData.applicant.school,
+                  classes: newProfileData.applicant.class,
+                  status: decodedNewToken.data.status,
+                };
+                const responseUser = await axios.post(`https://psikotest-otak-backend.politekniklp3i-tasikmalaya.ac.id/users`, data);
+                console.log(responseUser);
+                if (responseUser) {
+                  setTimeout(() => {
+                    setLoading(false);
+                  }, 1000);
+                  navigate("/question");
+                }
+              } catch (error) {
+                console.error('Error refreshing token or fetching profile:', error);
+                if (error.response && error.response.status === 400) {
+                  localStorage.removeItem('LP3ITO:token');
+                  navigate('/');
+                }
+              }
+            } else {
+              console.error('Error fetching profile:', profileError);
+              localStorage.removeItem('LP3ITO:token');
+              setErrorPage(true);
+              setTimeout(() => {
+                navigate('/');
+              }, 2000);
+            }
+          }
+        } catch (error) {
+          console.log(error);
+          if (error.response) {
+            if ([400, 403].includes(error.response.status)) {
+              localStorage.removeItem('LP3ITO:token');
+              navigate('/');
+            } else {
+              console.error('Unexpected HTTP error:', error);
+              setErrorPage(true);
+            }
+          } else if (error.request) {
+            console.error('Network error:', error);
+            setErrorPage(true);
+          } else {
+            console.error('Error:', error);
+            setErrorPage(true);
+          }
+        } finally {
+          setTimeout(() => {
+            setLoading(false);
+          }, 1000);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     getInfo();
   }, []);
+  // const [user, setUser] = useState({});
+  // const [result, setResult] = useState(null);
+  // const navigate = useNavigate();
+  // const [loading, setLoading] = useState(true);
+  // const [error, setError] = useState(true);
+  // const [hasil, setHasil] = useState('belum ada');
+
+  // const getUser = async () => {
+  //   checkTokenExpiration()
+  //     .then(() => {
+  //       const token = localStorage.getItem("token");
+  //       const decoded = jwtDecode(token);
+
+  //       const userId = decoded.id;
+  //       const userName = decoded.name;
+  //       const userEmail = decoded.email;
+  //       const userPhone = decoded.phone;
+  //       const userSchool = decoded.school ?? "Tidak diketahui";
+  //       const userClasses = decoded.class ?? "Tidak diketahui";
+  //       const userStatus = decoded.status;
+
+  //       const data = {
+  //         id: userId,
+  //         name: userName,
+  //         email: userEmail,
+  //         phone: userPhone,
+  //         school: userSchool,
+  //         classes: userClasses,
+  //         status: userStatus,
+  //       };
+
+  //       setUser(data);
+  //       getResult(data);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       // navigate("/");
+  //     });
+  // };
+
+  // const getResult = async (data) => {
+  //   await axios
+  //     .get(
+  //       `https://psikotest-otak-backend.politekniklp3i-tasikmalaya.ac.id/hasils/${data.id}`
+  //     )
+  //     .then((response) => {
+  //       const data = response.data;
+  //       setResult(data);
+
+  //       if (data.length == 0) {
+  //         setLoading(false);
+  //         setError(false);
+  //       } else {
+  //         const result = response.data[0];
+
+  //         const hasil = result.hasil;
+
+  //         setHasil(hasil[0]);
+  //         setLoading(false);
+  //         setError(false);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       setError(false);
+  //       setLoading(false);
+  //     });
+  // };
+
+  // const logoutFunc = () => {
+  //   localStorage.removeItem("LP3IPSYBRAIN:token");
+  //   localStorage.removeItem("bucket");
+  //   navigate("/");
+  // };
+
+  // const startTest = async () => {
+  //   try {
+  //     const responseUserExist = await axios.get(
+  //       `https://psikotest-kecerdasan-backend.politekniklp3i-tasikmalaya.ac.id/users/${user.id}`
+  //     );
+  //     if (responseUserExist.data) {
+  //       // navigate("/question");
+  //     } else {
+  //       const data = {
+  //         id_user: user.id,
+  //         name: user.name,
+  //         email: user.email,
+  //         phone: user.phone,
+  //         school: user.school,
+  //         classes: user.classes,
+  //       };
+  //       await axios
+  //         .post(
+  //           `https://psikotest-kecerdasan-backend.politekniklp3i-tasikmalaya.ac.id/users`,
+  //           data
+  //         )
+  //         .then(() => {
+  //           // navigate("/question");
+  //         })
+  //         .catch((error) => {
+  //           console.log(error);
+  //         });
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  // const getInfo = async () => {
+  //   // setLoading(true);
+
+  //   try {
+  //     const token = localStorage.getItem('LP3IPSYBRAIN:token');
+  //     if (!token) {
+  //       return; // navigate('/');
+  //     }
+
+  //     const decoded = jwtDecode(token);
+  //     console.log(decoded.data);
+  //     setUser(decoded.data);
+
+  //     const fetchProfile = async (token) => {
+  //       const response = await axios.get('https://pmb-api.politekniklp3i-tasikmalaya.ac.id/profiles/v1', {
+  //         headers: { Authorization: token },
+  //         withCredentials: true,
+  //       });
+  //       return response.data;
+  //     };
+
+  //     try {
+  //       const profileData = await fetchProfile(token);
+  //       const data = {
+  //         id: profileData.applicant.identity,
+  //         name: profileData.applicant.name,
+  //         email: profileData.applicant.email,
+  //         phone: profileData.applicant.phone,
+  //         school: profileData.applicant.school ?? "Tidak diketahui",
+  //         classes: profileData.applicant.class ?? "Tidak diketahui",
+  //         status: profileData.applicant.status == "1" ? "Aktif" : "Tidak Aktif",
+  //       };
+  //       console.log(data);
+  //     } catch (profileError) {
+  //       if (profileError.response && profileError.response.status === 403) {
+  //         try {
+  //           const response = await axios.get('https://pmb-api.politekniklp3i-tasikmalaya.ac.id/auth/token/v2', {
+  //             withCredentials: true,
+  //           });
+  //           const newToken = response.data;
+  //           const decodedNewToken = jwtDecode(newToken);
+  //           localStorage.setItem('LP3IPSYBRAIN:token', newToken);
+  //           console.log(decodedNewToken.data);
+  //           setUser(decodedNewToken.data);
+  //           const newProfileData = await fetchProfile(newToken);
+  //           const data = {
+  //             id: newProfileData.applicant.identity,
+  //             name: newProfileData.applicant.name,
+  //             email: newProfileData.applicant.email,
+  //             phone: newProfileData.applicant.phone,
+  //             school: newProfileData.applicant.school ?? "Tidak diketahui",
+  //             classes: newProfileData.applicant.class ?? "Tidak diketahui",
+  //             status: newProfileData.applicant.status == "1" ? "Aktif" : "Tidak Aktif",
+  //           };
+  //           console.log(data);
+  //         } catch (error) {
+  //           console.error('Error refreshing token or fetching profile:', error);
+  //           if (error.response && error.response.status === 400) {
+  //             localStorage.removeItem('LP3IPSYBRAIN:token');
+              
+  //           }
+  //         }
+  //       } else {
+  //         console.error('Error fetching profile:', profileError);
+  //         localStorage.removeItem('LP3IPSYBRAIN:token');
+  //         // setErrorPage(true);
+  //         setTimeout(() => {
+  //           // // navigate('/');
+  //         }, 2000);
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     if (error.response) {
+  //       if ([400, 403].includes(error.response.status)) {
+  //         localStorage.removeItem('LP3IPSYBRAIN:token');
+  //         // // navigate('/');
+  //       } else {
+  //         console.error('Unexpected HTTP error:', error);
+  //         // setErrorPage(true);
+  //       }
+  //     } else if (error.request) {
+  //       console.error('Network error:', error);
+  //       // setErrorPage(true);
+  //     } else {
+  //       console.error('Error:', error);
+  //       // setErrorPage(true);
+  //     }
+  //     // // navigate('/');
+  //   } finally {
+  //     setTimeout(() => {
+  //       setLoading(false);
+  //     }, 1000);
+  //   }
+  // };
+
+
+  // useEffect(() => {
+  //   getInfo();
+  // }, []);
 
   return (
     <section className="bg-white h-screen relative bg-cover">
@@ -244,14 +553,14 @@ function Home() {
         </div>
         {loading ? (
           <p className="text-gray-900 text-sm">Loading...</p>
-        ) : error ? (
+        ) : errorPage ? (
           <div className="text-center space-y-3">
             <div className="border-2 border-red-500 text-base bg-red-500 rounded-xl text-white px-5 py-3">
               <p>Mohon maaf, server sedang tidak tersedia.</p>
             </div>
             <button
               type="button"
-              onClick={logoutFunc}
+              onClick={logoutHandle}
               className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-xl text-sm"
             >
               <i className="fa-solid fa-right-from-bracket"></i> Keluar
@@ -273,7 +582,7 @@ function Home() {
             </div>
             <button
               type="button"
-              onClick={logoutFunc}
+              onClick={logoutHandle}
               className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-xl text-sm"
             >
               <i className="fa-solid fa-right-from-bracket"></i> Keluar
