@@ -1,4 +1,4 @@
-import react, { useState, useEffect, useId } from "react";
+import { useState, useEffect } from "react";
 import backgroundImage from "../assets/img/background.png";
 import control from "../assets/img/question/control.png";
 import planning from "../assets/img/question/planning.png";
@@ -54,39 +54,47 @@ const Questions = () => {
     return savedOption ? JSON.parse(savedOption) : {};
   });
   const [hasil, setHasil] = useState("");
-  const [user, setUser] = useState({});
+
+
+  const [user, setUser] = useState({
+    name: 'Loading...'
+  });
+
+  const [errorPage, setErrorPage] = useState(false);
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
 
-  const getUser = async () => {
-    checkTokenExpiration()
-      .then(async () => {
-        const token = localStorage.getItem("token");
-        const decoded = jwtDecode(token);
+  // const getUser = async () => {
+  //   checkTokenExpiration()
+  //     .then(async () => {
+  //       const token = localStorage.getItem("token");
+  //       const decoded = jwtDecode(token);
 
-        const userId = decoded.id;
-        const userName = decoded.name;
-        const userEmail = decoded.email;
-        const userPhone = decoded.phone;
-        const userStatus = decoded.status;
-        const userSchool = decoded.school;
+  //       const userId = decoded.id;
+  //       const userName = decoded.name;
+  //       const userEmail = decoded.email;
+  //       const userPhone = decoded.phone;
+  //       const userStatus = decoded.status;
+  //       const userSchool = decoded.school;
 
-        const data = {
-          id: userId,
-          name: userName,
-          email: userEmail,
-          phone: userPhone,
-          status: userStatus,
-          school: userSchool,
-        };
+  //       const data = {
+  //         id: userId,
+  //         name: userName,
+  //         email: userEmail,
+  //         phone: userPhone,
+  //         status: userStatus,
+  //         school: userSchool,
+  //       };
 
-        setUser(data);
-      })
-      .catch((error) => {
-        console.log(error);
-        navigate("/");
-      });
-  };
+  //       setUser(data);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       navigate("/");
+  //     });
+  // };
 
   const [userid, setUserid] = useState(" ");
   // COBA LOCALSTORAGE HASIL
@@ -182,16 +190,115 @@ const Questions = () => {
     }
   };
 
+  const getInfo = async () => {
+    setLoading(true);
+
+    try {
+      const token = localStorage.getItem('LP3ITO:token');
+      if (!token) {
+        return navigate('/');
+      }
+
+      const decoded = jwtDecode(token);
+      setUser(decoded.data);
+
+      const fetchProfile = async (token) => {
+        const response = await axios.get('https://pmb-api.politekniklp3i-tasikmalaya.ac.id/profiles/v1', {
+          headers: { Authorization: token },
+          withCredentials: true,
+        });
+        return response.data;
+      };
+
+      try {
+        const profileData = await fetchProfile(token);
+        const data = {
+          id: decoded.data.id,
+          name: profileData.applicant.name,
+          email: profileData.applicant.email,
+          phone: profileData.applicant.phone,
+          school: profileData.applicant.school,
+          classes: profileData.applicant.class,
+          status: decoded.data.status,
+        };
+        console.log(data);
+      } catch (profileError) {
+        if (profileError.response && profileError.response.status === 403) {
+          try {
+            const response = await axios.get('https://pmb-api.politekniklp3i-tasikmalaya.ac.id/auth/token/v2', {
+              withCredentials: true,
+            });
+
+            const newToken = response.data;
+            const decodedNewToken = jwtDecode(newToken);
+            localStorage.setItem('LP3ITO:token', newToken);
+            setUser(decodedNewToken.data);
+            const newProfileData = await fetchProfile(newToken);
+            const data = {
+              id: decodedNewToken.data.id,
+              name: newProfileData.applicant.name,
+              email: newProfileData.applicant.email,
+              phone: newProfileData.applicant.phone,
+              school: newProfileData.applicant.school,
+              classes: newProfileData.applicant.class,
+              status: decodedNewToken.data.status,
+            };
+            console.log(data);
+          } catch (error) {
+            console.error('Error refreshing token or fetching profile:', error);
+            if (error.response && error.response.status === 400) {
+              localStorage.removeItem('LP3ITO:token');
+              navigate('/')
+            }
+          }
+        } else {
+          console.error('Error fetching profile:', profileError);
+          localStorage.removeItem('LP3ITO:token');
+          setErrorPage(true);
+          setTimeout(() => {
+            navigate('/');
+          }, 2000);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      if (error.response) {
+        if ([400, 403].includes(error.response.status)) {
+          localStorage.removeItem('LP3ITO:token');
+          navigate('/');
+        } else {
+          console.error('Unexpected HTTP error:', error);
+          setErrorPage(true);
+        }
+      } else if (error.request) {
+        console.error('Network error:', error);
+        setErrorPage(true);
+      } else {
+        console.error('Error:', error);
+        setErrorPage(true);
+      }
+      navigate('/');
+    } finally {
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
+    }
+  };
+
   useEffect(() => {
-    checkTokenExpiration()
-      .then(() => {
-        getUser();
-      })
-      .catch((error) => {
-        console.log(error);
-        navigate("/");
-      });
+    getInfo();
   }, []);
+
+  // useEffect(() => {
+  //   checkTokenExpiration()
+  //     .then(() => {
+  //       getUser();
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       navigate("/");
+  //     });
+  // }, []);
 
   useEffect(() => {
     const radioButtons = document.querySelectorAll(".radio-button");
