@@ -204,8 +204,7 @@ function Home() {
         `https://psikotest-otak-backend.politekniklp3i-tasikmalaya.ac.id/users/${user.id}`
       );
       if (responseUserExist.data) {
-        console.log(responseUserExist.data);
-        // navigate("/question");
+        navigate("/question");
       } else {
         try {
           const token = localStorage.getItem('LP3ITO:token');

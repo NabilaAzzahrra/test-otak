@@ -380,7 +380,7 @@ const Questions = () => {
       </div>
 
       <div
-        className="bg-white mb-20 pb-14 md:pb-10 p-10 shadow-lg rounded rounded-3xl w-full mx-20 flex flex-col md:flex-row md:flex gap-20 items-center justify-center"
+        className="bg-white mb-20 pb-14 md:pb-10 p-10 shadow-lg rounded-3xl w-full mx-20 flex flex-col md:flex-row md:flex gap-20 items-center justify-center"
         data-aos="fade-down"
         data-aos-delay="400"
       >
