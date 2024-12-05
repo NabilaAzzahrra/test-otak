@@ -41,7 +41,6 @@ import nomusic from "../assets/img/question/no-music.png";
 import logoLp3i from "../assets/img/logo-lp3i.png";
 import logoTagline from "../assets/img/tagline-warna.png";
 import { useNavigate } from "react-router-dom";
-import { checkTokenExpiration } from "../middlewares/middleware";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 
@@ -66,38 +65,7 @@ const Questions = () => {
 
   const navigate = useNavigate();
 
-  // const getUser = async () => {
-  //   checkTokenExpiration()
-  //     .then(async () => {
-  //       const token = localStorage.getItem("token");
-  //       const decoded = jwtDecode(token);
-
-  //       const userId = decoded.id;
-  //       const userName = decoded.name;
-  //       const userEmail = decoded.email;
-  //       const userPhone = decoded.phone;
-  //       const userStatus = decoded.status;
-  //       const userSchool = decoded.school;
-
-  //       const data = {
-  //         id: userId,
-  //         name: userName,
-  //         email: userEmail,
-  //         phone: userPhone,
-  //         status: userStatus,
-  //         school: userSchool,
-  //       };
-
-  //       setUser(data);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //       navigate("/");
-  //     });
-  // };
-
   const [userid, setUserid] = useState(" ");
-  // COBA LOCALSTORAGE HASIL
 
   useEffect(() => {
     const storedUserid = localStorage.getItem("userid");
@@ -112,8 +80,6 @@ const Questions = () => {
       setUserid(user.id);
     }
   }, [user]);
-
-  // ====================
 
   const handleOptionSelect = (event) => {
     const { name, value, dataset } = event.target;
@@ -288,17 +254,6 @@ const Questions = () => {
   useEffect(() => {
     getInfo();
   }, []);
-
-  // useEffect(() => {
-  //   checkTokenExpiration()
-  //     .then(() => {
-  //       getUser();
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //       navigate("/");
-  //     });
-  // }, []);
 
   useEffect(() => {
     const radioButtons = document.querySelectorAll(".radio-button");
