@@ -5,11 +5,11 @@ import CreatableSelect from 'react-select/creatable'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch, faArrowRight } from '@fortawesome/free-solid-svg-icons'
 
+import LogoLP3IPutih from '../../assets/logo-lp3i-putih.svg'
+import LogoTagline from '../../assets/tagline-warna.png'
 
 import LoadingScreen from '../LoadingScreen'
 import ServerError from '../errors/ServerError'
-import LogoLP3IPutih from '../../assets/logo-lp3i-putih.svg'
-import LogoTagline from '../../assets/tagline-warna.png'
 
 const Register = () => {
   const navigate = useNavigate();

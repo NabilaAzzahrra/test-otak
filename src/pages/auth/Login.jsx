@@ -6,6 +6,7 @@ import { faEye, faEyeSlash, faRightToBracket } from '@fortawesome/free-solid-svg
 
 import LogoLP3IPutih from '../../assets/logo-lp3i-putih.svg'
 import LogoTagline from '../../assets/tagline-warna.png'
+
 import LoadingScreen from '../LoadingScreen'
 import ServerError from '../errors/ServerError'
 
@@ -142,12 +143,16 @@ const Login = () => {
       loading ? (
         <LoadingScreen />
       ) : (
-        <main className='flex flex-col items-center justify-center bg-gradient-to-b from-lp3i-400 via-lp3i-200 to-lp3i-400 h-screen p-5 space-y-4'>
+        <main className='flex flex-col items-center justify-center bg-gradient-to-b from-lp3i-400 via-lp3i-200 to-lp3i-400 h-screen p-5 space-y-5'>
           <nav className='flex items-center gap-3 py-3'>
             <img src={LogoLP3IPutih} alt="" width={180} />
             <img src={LogoTagline} alt="" width={110} />
           </nav>
-          <div className='max-w-lg w-full bg-white p-10 rounded-3xl shadow-xl space-y-6'>
+          <section className='max-w-lg mx-auto text-center space-y-1'>
+            <h2 className='font-bold text-3xl text-white drop-shadow'>Psikotest Online: Brain</h2>
+            <p className='text-white text-sm drop-shadow'>Platform tes online LP3I ini dirancang khusus untuk mengetahui jenis kecerdasan otak kiri dan kanan yang siswa/i miliki.</p>
+          </section>
+          <section className='max-w-lg w-full bg-white p-10 rounded-3xl shadow-xl space-y-6'>
             <form onSubmit={loginHandle} method='POST' className='space-y-6'>
               <div className='space-y-4'>
                 <div>
@@ -197,7 +202,7 @@ const Login = () => {
                 </Link>
               </div>
             </form>
-          </div>
+          </section>
         </main>
       )
     )
